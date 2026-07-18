@@ -1,6 +1,7 @@
 package com.payflow.controller;
 
-import com.payflow.entity.Users;
+import com.payflow.dto.request.UserRequest;
+import com.payflow.dto.response.UserResponse;
 import com.payflow.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,30 +17,26 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @PostMapping
-    public Users createUser(@RequestBody Users user) {
-        return userService.createUser(user);
+    public UserResponse createUser(@RequestBody UserRequest request) {
+        return userService.createUser(request);
     }
 
-
     @GetMapping("/{id}")
-    public Users getUserById(@PathVariable Long id) {
+    public UserResponse getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
-
     @GetMapping
-    public List<Users> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
-
-    @PutMapping
-    public Users updateUser(@RequestBody Users user) {
-        return userService.updateUser(user);
+    @PutMapping("/{id}")
+    public UserResponse updateUser(@PathVariable Long id,
+                                   @RequestBody UserRequest request) {
+        return userService.updateUser(id, request);
     }
-
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id) {
