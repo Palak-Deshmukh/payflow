@@ -1,6 +1,7 @@
 package com.payflow.controller;
 
-import com.payflow.entity.Payment;
+import com.payflow.dto.request.PaymentRequest;
+import com.payflow.dto.response.PaymentResponse;
 import com.payflow.service.PaymentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,35 +13,32 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-
     public PaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
     }
 
-
     @PostMapping
-    public Payment createPayment(@RequestBody Payment payment) {
-        return paymentService.createPayment(payment);
+    public PaymentResponse createPayment(@RequestBody PaymentRequest paymentRequest) {
+        return paymentService.createPayment(paymentRequest);
     }
 
-
     @GetMapping("/{id}")
-    public Payment getPaymentById(@PathVariable Long id) {
+    public PaymentResponse getPaymentById(@PathVariable Long id) {
         return paymentService.getPaymentById(id);
     }
 
-
     @GetMapping
-    public List<Payment> getAllPayments() {
+    public List<PaymentResponse> getAllPayments() {
         return paymentService.getAllPayments();
     }
 
+    @PutMapping("/{id}")
+    public PaymentResponse updatePayment(
+            @PathVariable Long id,
+            @RequestBody PaymentRequest paymentRequest) {
 
-    @PutMapping
-    public Payment updatePayment(@RequestBody Payment payment) {
-        return paymentService.updatePayment(payment);
+        return paymentService.updatePayment(id, paymentRequest);
     }
-
 
     @DeleteMapping("/{id}")
     public String deletePayment(@PathVariable Long id) {
