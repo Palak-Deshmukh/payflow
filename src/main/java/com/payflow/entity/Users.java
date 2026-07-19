@@ -2,6 +2,7 @@ package com.payflow.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.payflow.entity.Payment;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +21,7 @@ public class Users {
     private Long id;
 
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
 

@@ -17,11 +17,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public UserResponse createUser(@RequestBody UserRequest request) {
-        return userService.createUser(request);
-    }
-
     @GetMapping("/{id}")
     public UserResponse getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
