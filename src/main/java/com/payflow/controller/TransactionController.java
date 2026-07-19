@@ -4,6 +4,8 @@ import com.payflow.dto.request.TransactionRequest;
 import com.payflow.dto.response.TransactionResponse;
 import com.payflow.service.TransactionService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -18,13 +20,14 @@ public class TransactionController {
     }
 
     @PostMapping
-    public TransactionResponse createTransaction(@RequestBody TransactionRequest request) {
-        return transactionService.createTransaction(request);
+    public ResponseEntity<TransactionResponse> createTransaction(@RequestBody TransactionRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(transactionService.createTransaction(request));
     }
 
     @GetMapping("/{id}")
-    public TransactionResponse getTransactionById(@PathVariable Long id) {
-        return transactionService.getTransactionById(id);
+    public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable Long id) {
+        return ResponseEntity.ok(transactionService.getTransactionById(id));
     }
 
     @GetMapping
@@ -33,14 +36,16 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}")
-    public TransactionResponse updateTransaction(@PathVariable Long id,
-                                                 @RequestBody TransactionRequest request) {
-        return transactionService.updateTransaction(id, request);
+    public ResponseEntity<TransactionResponse> updateTransaction(
+            @PathVariable Long id,
+            @RequestBody TransactionRequest request) {
+
+        return ResponseEntity.ok(transactionService.updateTransaction(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteTransaction(@PathVariable Long id) {
+    public ResponseEntity<String> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
-        return "Transaction deleted successfully";
+        return ResponseEntity.ok("Transaction deleted successfully");
     }
 }

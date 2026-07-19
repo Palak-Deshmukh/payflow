@@ -1,11 +1,13 @@
 package com.payflow.service;
 
 import com.payflow.dao.UserDao;
+import com.payflow.dao.AuthDao;
 import com.payflow.dto.request.UserRequest;
 import com.payflow.dto.response.UserResponse;
 import com.payflow.entity.Users;
 import com.payflow.mapper.UserMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,17 +16,30 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthDao authDao;
 
-    public UserService(UserDao userDao) {
+    public UserService(UserDao userDao, PasswordEncoder passwordEncoder, AuthDao authDao) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
+        this.authDao = authDao;
     }
 
     public UserResponse createUser(UserRequest request) {
 
-        Users user = UserMapper.toEntity(request);
-        Users savedUser = userDao.save(user);
+        if(authDao.existsByEmail(request.getEmail())){
+            throw new RuntimeException("Email already exists");
+        }
 
-        return UserMapper.toResponse(savedUser);
+        Users user = UserMapper.toEntity(request);
+
+        user.setPassword(
+            passwordEncoder.encode(request.getPassword())
+        );
+
+        Users saved = authDao.save(user);
+
+        return UserMapper.toResponse(saved);
     }
 
     public UserResponse getUserById(Long id) {
@@ -50,7 +65,7 @@ public class UserService {
 
         existingUser.setName(request.getName());
         existingUser.setEmail(request.getEmail());
-        existingUser.setPassword(request.getPassword());
+        existingUser.setPassword(passwordEncoder.encode(request.getPassword()));
         existingUser.setRole(request.getRole());
 
         Users updatedUser = userDao.save(existingUser);
